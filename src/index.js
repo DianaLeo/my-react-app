@@ -9,6 +9,7 @@ import Contact from './pages/Contact';
 import NoPage from './pages/NoPage';
 import reportWebVitals from './reportWebVitals';
 
+
 export default function MyReactApp(){
   return (
     <BrowserRouter>
@@ -25,17 +26,6 @@ export default function MyReactApp(){
 }
 
 
-var btnid = '';
-const btncollection = document.querySelectorAll('button');
-btncollection.forEach((item)=>{
-  item.addEventListener('click',function(){myfunc(item.id)});
-});
-function myfunc(a){
-  btnid=a;
-  root.render(
-    <App btntype={ btnid } />
-  );
-}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<MyReactApp/>);

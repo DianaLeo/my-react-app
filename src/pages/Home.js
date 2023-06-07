@@ -1,28 +1,50 @@
-import App from './App';
+import { useState } from 'react';
 
-var btnid = '';
-const btncollection = document.querySelectorAll('button');
-btncollection.forEach((item)=>{
-  item.addEventListener('click',function(){myfunc(item.id)});
-});
-function myfunc(a){
-  btnid=a;
-  root.render(
-    <App btntype={ btnid } />
-  );
-}
+
 
 function Home() {
-  
+  const [eid, setEid] = useState("");
+
+  function ShowSection(prop) {
+    const id = prop.type;
+    switch (id) {
+      case "lists":
+        const cars = [
+          { id: 1, brand: 'Ford' },
+          { id: 2, brand: 'Haval' },
+          { id: 3, brand: 'wrs' }
+        ];
+        return (
+          <div className="App">
+            <div>{cars.map((car) => <Myfunc key={car.id} brand={car.brand} />)}
+            </div>
+          </div>
+        )
+      case "forms":
+        return (
+          <div className="App">
+            <p>forms
+            </p>
+          </div>
+        )
+    }
+  };
 
   return (
     <div>
       <h1>Home</h1>
-      <button id="lists">lists</button>
-      <button id="forms">forms</button>
+      <button id="lists" onClick={(e) => setEid(e.target.id)}>lists</button>
+      <button id="forms" onClick={(e) => setEid(e.target.id)}>forms</button>
+      <ShowSection type={eid} />
     </div>
 
   )
 };
-  
+
+
+
+function Myfunc(prop) {
+  return <p>i am a {prop.brand}</p>
+}
+
 export default Home;
