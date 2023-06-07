@@ -1,17 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter,Routes,Route} from 'react-router-dom';
-import './index.css';
+import './css/index.css';
 import Layout from './pages/Layout';
 import Home from './pages/Home';
 import Blogs from './pages/Blogs';
 import Contact from './pages/Contact';
 import NoPage from './pages/NoPage';
-import reportWebVitals from './reportWebVitals';
+import reportWebVitals from './js/reportWebVitals';
 
 
 export default function MyReactApp(){
-  return (
+  return (//layout is the navigaiton bar
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
