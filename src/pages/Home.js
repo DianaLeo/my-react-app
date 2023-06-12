@@ -3,11 +3,10 @@ import { useState } from 'react';
 
 
 function Home() {
-  const [eid, setEid] = useState("");
+  const [eid, setEid] = useState("lists");
 
-  function ShowSection(prop) {
-    const id = prop.type;
-    switch (id) {
+  function ShowSection() {
+    switch (eid) {
       case "lists":
         const cars = [
           { id: 1, brand: 'Ford' },
@@ -35,7 +34,7 @@ function Home() {
       <h1>Home</h1>
       <button id="lists" onClick={(e) => setEid(e.target.id)}>lists</button>
       <button id="forms" onClick={(e) => setEid(e.target.id)}>forms</button>
-      <ShowSection type={eid} />
+      <ShowSection />
     </div>
 
   )
