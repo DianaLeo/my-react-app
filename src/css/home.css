@@ -1,0 +1,8 @@
+div {
+    padding: 1rem;
+}
+
+#flexContainer {
+    display: flex;
+    justify-content: center;
+}
