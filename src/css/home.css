@@ -6,3 +6,7 @@ div {
     display: flex;
     justify-content: center;
 }
+
+.useContext {
+    background-color: white;
+}

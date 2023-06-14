@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useReducer, useContext } from 'react';
 import '../css/home.css';
 
+const moodContext = React.createContext();
 
 function Home() {
   return (
@@ -13,6 +14,10 @@ function Home() {
       <UseEffect />
       <hr></hr>
       <UseRef />
+      <hr></hr>
+      {/* <UseReducer /> */}
+      <hr></hr>
+      <UseContext />
     </div>
 
   )
@@ -118,8 +123,8 @@ function UseRef() {
       <section id='flexContainer'>
         <div>
           <h4>Does Not Cause Re-renders</h4>
-If we tried to count how many times our application renders using the useState Hook, we would be caught in an infinite loop since this Hook itself causes a re-render.
-To avoid this, we can use the useRef Hook.
+          If we tried to count how many times our application renders using the useState Hook, we would be caught in an infinite loop since this Hook itself causes a re-render.
+          To avoid this, we can use the useRef Hook.
           <UseRefDoesNotCauseRerender />
         </div>
         <div>
@@ -171,21 +176,124 @@ function UseRefAccessDOM() {
 };
 
 function UseRefTrackStateChanges() {
-  const [inputValue, setInputValue] = useState();
-  const previousValue = useRef();
+  const [inputValue, setInputValue] = useState('');
+  const previousValue = useRef(''); 
+  const renderCount = useRef(0);
+
+  const setValueandLog = (value)=>{
+    console.log('setValueandLog: before set InputValue= ',inputValue);
+    setInputValue(value);
+    console.log('setValueandLog: after set InputValue= ',inputValue);
+  }
   useEffect(() => {
+    console.log('use effect: before previous.current= ',previousValue.current);
+    console.log('use effect: before renderCount.current= ',renderCount.current);
     previousValue.current = inputValue;
-  },[inputValue]);
+    renderCount.current++;
+    console.log('use effect: after previous.current= ',previousValue.current);
+    console.log('use effect: after renderCount.current= ',renderCount.current);
+  }, [inputValue]);
   return (
     <>
-      <input type='text' value={inputValue} onChange={(e) => setInputValue(e.target.value)}></input>
+      <input type='text' value={inputValue} onChange={(e) => setValueandLog(e.target.value)}></input>
+      <p>current input value: {inputValue}</p>
       <p>Previous input value: {previousValue.current}</p>
+      <p>Render count: {renderCount.current}</p>
+      <p>Because React calls render first, and then calls useEffect.</p>
     </>
+  )
+};
+
+function UseReducer() {
+  const initialTodos = [
+    {
+      id: 1,
+      title: "Todo 1",
+      complete: false,
+    },
+    {
+      id: 2,
+      title: "Todo 2",
+      complete: true,
+    },
+  ];
+
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case "COMPLETE":
+        return state.map(item => {
+          if (item.id === action.id) {
+            return { ...item, complete: !item.complete };
+          } else { return item }
+        })
+      default:
+        return state;
+    }
+  }
+  const [todos, dispatch] = useReducer(reducer, initialTodos);
+
+  const handleComplete = (todo) => {
+    dispatch({ type: "COMPLETE", id: todo.id });
+  };
+
+  return (
+    <div>
+      <h3>UseReducer Hook </h3>
+      <p>The useReducer Hook returns the current stateand a dispatchmethod.</p>
+      {initialTodos.map(item => (
+        <label>
+          <input type='checkbox' checked={item.complete} onChange={handleComplete}></input>
+          {item.title}
+        </label>
+      ))}
+
+    </div>
+  )
+};
+
+function UseContext() {
+  const [moods, setMood] = useState({
+    happy: '😀',
+    sad: '😭',
+    flag: true
+  });
+
+  function toggleMood() {
+    if (moods.flag == true) {
+      setMood(prevState => {
+        return { happy: prevState.sad, sad: prevState.happy, flag: !prevState.flag }
+      });
+    } else {
+      setMood(prevState => {
+        return { happy: prevState.sad, sad: prevState.happy, flag: !prevState.flag }
+      });
+    }
+  };
+
+  return (
+    <div className='useContext'>
+      <h3>UseContext and UseState Hook {moods.sad}</h3>
+      <button onClick={toggleMood}>Toggle Moods</button>
+      <moodContext.Provider value={moods}>
+        <NestedComponent />
+      </moodContext.Provider>
+
+    </div>
+  )
+};
+
+function NestedComponent() {
+  const moods = useContext(moodContext);
+  return (
+    <div>
+      <h4>Nested component</h4>
+      <p>{moods.happy}</p>
+    </div>
   )
 }
 
 function Myfunc(prop) {
   return <p>{prop.id}: i am a {prop.brand}</p>
-}
+};
 
 export default Home;
