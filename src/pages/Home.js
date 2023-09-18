@@ -6,7 +6,7 @@ const moodContext = React.createContext();
 function Home() {
   return (
     <div>
-      <h1>Home</h1>
+      <h1>Learning Hooks</h1>
       <EmbededComponent />
       <hr></hr>
       <UpdateMultipleState />
@@ -142,22 +142,30 @@ function UseRef() {
 };
 
 function UseRefDoesNotCauseRerender() {
-  const [inputValue, setInputValue] = useState();
-  // const [c,setC] = useState(0);
+  const [inputValue, setInputValue] = useState("");
+  //const [c,setC] = useState(-1);
   const count = useRef(0);
 
-  //虽然这样也行，但是会报warning
+  //This way will also do:
   // useEffect(()=>{
-  //   setC((c)=>c+1);
+  //   setC(c=>c+1);
   // },[inputValue]);
+  
+  //The initial render caused count.current++, 
+  //so after the initial render, count.current has been set to 1.
+  //But it won't show on the DOM, because it won't cause a second render.
+  //count.current is always one step ahead of the DOM render
   useEffect(() => {
+    console.log('DoesNotCauseRerender:count.current=',count.current);
     count.current = count.current + 1;
+    console.log('DoesNotCauseRerender:count.current=',count.current);
   });
 
   return (
     <>
       <input type='text' value={inputValue} onChange={(e) => setInputValue(e.target.value)}></input>
       <p>Render times: {count.current}</p>
+      {/* <p>Render times: {c}</p> */}
     </>
   )
 };
@@ -199,7 +207,7 @@ function UseRefTrackStateChanges() {
       <p>current input value: {inputValue}</p>
       <p>Previous input value: {previousValue.current}</p>
       <p>Render count: {renderCount.current}</p>
-      <p>Because React calls render first, and then calls useEffect.</p>
+      <p>React calls render first, and then calls useEffect. But ref doesn't cause a rerender. So ref is always one step ahead of the DOM render.</p>
     </>
   )
 };
@@ -255,19 +263,12 @@ function UseContext() {
   const [moods, setMood] = useState({
     happy: '😀',
     sad: '😭',
-    flag: true
   });
 
   function toggleMood() {
-    if (moods.flag == true) {
       setMood(prevState => {
-        return { happy: prevState.sad, sad: prevState.happy, flag: !prevState.flag }
+        return { ...prevState, happy: prevState.sad, sad: prevState.happy} 
       });
-    } else {
-      setMood(prevState => {
-        return { happy: prevState.sad, sad: prevState.happy, flag: !prevState.flag }
-      });
-    }
   };
 
   return (
