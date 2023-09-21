@@ -26,12 +26,28 @@ function Home() {
 function EmbededComponent() {
   const [eid, setEid] = useState("lists");
 
+  const [errors, setErrors] = useState({
+    fristname: false,
+    lastname:false,
+    email:false
+  })
+
+  const updateStateHandler = ()=>{
+    setErrors(prev=>{
+      return {...prev, fristname: true}
+    })
+  }
+
   return (
     <div>
       <h3>EmbededComponent</h3>
       <button id="forms" onClick={(e) => setEid(e.target.id)}>forms</button>
       <button id="lists" onClick={(e) => setEid(e.target.id)}>lists</button>
+      <button onClick={updateStateHandler}>object or array states</button>
       <ConditionedComponent id={eid} />
+      <p>React doesn't allow object as values. It you want to re-render a BOOLEAN, you have to cast it to STRING.</p>
+      <div className={`${(errors.fristname===true)?"true":""}`}>It is {errors.fristname.toString()}.</div>
+
     </div>
   )
 }
@@ -68,12 +84,12 @@ function UpdateMultipleState() {
     brand: "Ford",
     model: "Mustang",
     year: "1964",
-    color: "red"
+    color: "false"
   });
 
   const changeColor = () => {
     setCar(previousState => {
-      return { ...previousState, color: "blue" }
+      return { ...previousState, color: "true" }
     });
   };
   const changeBrand = () => {
